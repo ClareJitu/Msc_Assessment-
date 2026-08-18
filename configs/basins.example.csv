@@ -1,0 +1,4 @@
+station_id,region,area_km2,cn,tc_hr,length_m,slope,label
+station_0001,upper_basin,42.5,78,,8400,0.021,Gurara_trib_A
+station_0002,upper_basin,17.2,71,1.8,,,Gurara_trib_B
+station_0003,coastal,113.0,86,5.4,,,Urban_outfall_3

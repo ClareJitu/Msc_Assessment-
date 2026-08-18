@@ -1,0 +1,11 @@
+pandas>=2.1
+numpy>=1.26
+scipy>=1.11
+# lmoments3 no longer required - L-moments implemented natively in stats/descriptive.py
+pyarrow>=14.0
+PyYAML>=6.0
+matplotlib>=3.8
+tqdm>=4.66
+duckdb>=0.10        # optional, for querying the parquet output
+pytest>=7.4         # dev
+tabulate>=0.9    # markdown tables in `precip report`
