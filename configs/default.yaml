@@ -1,7 +1,7 @@
 # Every value here is hashed into config_hash and stored on every output row.
 input_glob: "data/**/*.csv"
 out_dir: "runs/latest"
-stages: [descriptive, ams, gev, idf]   # dependencies auto-resolve; add: design_storm, runoff, scaling
+stages: [descriptive, ams, gev, idf, design_storm, runoff, scaling]   # dependencies auto-resolve
 workers: 8
 resume: true
 chunksize: 32
@@ -26,14 +26,14 @@ extremes:
 design:
   storm_duration_hr: 24
   design_return_period_yr: 50
-  dt_hr: 1.0
+  dt_hr: 0.25
   peak_position: 0.5
 
 basin:
   # source: table       -> real catchments, one hydrograph per station
   # source: scenarios   -> no catchments; screen each station against archetypes
   # source: single      -> one basin for every file
-  source: scenarios
+  source: single
   table_path: null
   join_key: station_id
   region_fallback: true

@@ -1,6 +1,6 @@
 # Precipitation analysis — precipitation
 
-Record 1969-01-01 to 2003-12-31 · config `c23be4ca81e4` · fit `lmom`
+Record 1969-01-01 to 2003-12-31 · config `67712533c266` · fit `lmom`
 
 ## 1. Data quality, basic statistics, P(dry), time series
 
@@ -160,6 +160,20 @@ Monotonicity checks passed: **True**
 
 > COMMENTARY: how intensity falls with duration and rises with return period.
 
+## 7. Synthetic hydrograph and runoff
+
+**default** — area 50.0 km², CN 75.0, tc 3.0 h
+
+|   total_rain_mm |   total_runoff_mm |   losses_mm |   runoff_coefficient |   S_mm |   Ia_mm |   Tp_hr |   Qp_unit_cms_per_mm |   uh_volume_correction |   uh_ordinates |   peak_q_cms |   time_to_peak_hr |   volume_m3 |   volume_error |   base_time_hr |   area_km2 |   cn |   tc_hr |
+|----------------:|------------------:|------------:|---------------------:|-------:|--------:|--------:|---------------------:|-----------------------:|---------------:|-------------:|------------------:|------------:|---------------:|---------------:|-----------:|-----:|--------:|
+|           314.3 |             231.5 |       82.84 |               0.7365 |  84.67 |   16.93 |   1.925 |                5.827 |                  1.083 |             40 |        897.9 |                14 |   1.157e+07 |              0 |          15.25 |         50 |   75 |       3 |
+
+![hyd](figs/hydrograph_default.png)
+
+## 8. Uncertainties in the runoff estimate
+
+> COMMENTARY: distribution choice, parameter uncertainty at n=33, missing data and window censoring, the assumed basin parameters, SCS-CN and UH structural assumptions, measurement error.
+
 ## 9. Automating over 10,000 files
 
 > COMMENTARY: this package is the answer — see README.
@@ -179,3 +193,19 @@ Monotonicity checks passed: **True**
 ![acf](figs/autocorrelation.png)
 
 > COMMENTARY: why dependence strengthens with aggregation.
+
+## 11. Scaling relationship
+
+H = **0.2408**, linearity r² = **0.9988** → **simple**
+
+|   q |    K_q |   intercept |     r2 |
+|----:|-------:|------------:|-------:|
+|   1 | 0.2184 |       4.046 | 0.9768 |
+|   2 | 0.4379 |       8.427 | 0.9712 |
+|   3 | 0.6707 |      13.22  | 0.9623 |
+|   4 | 0.9214 |      18.3   | 0.9559 |
+|   5 | 1.181  |      23.51  | 0.9528 |
+
+![scaling](figs/scaling.png)
+
+> COMMENTARY: interpret simple vs multiscaling.

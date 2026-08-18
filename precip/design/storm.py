@@ -19,7 +19,8 @@ def idf_interpolator(ctx: Context, cfg: Config, T: float):
 
     Interpolated in LOG-LOG space: IDF curves are near-linear there, so linear
     interpolation on logs behaves far better between 1h and 3h than linear
-    interpolation on the raw values. Refuses to extrapolate.
+    interpolation on the raw values. For sub-1-hour durations, extrapolate
+    linearly on the log-log curve using the steepest slope.
     """
     Ts = list(cfg.extremes.return_periods_yr)
     if T not in Ts:
@@ -27,10 +28,19 @@ def idf_interpolator(ctx: Context, cfg: Config, T: float):
     j = Ts.index(T)
     d = np.asarray(cfg.extremes.durations_hr, dtype="float64")
     i = ctx.idf[:, j]
+    
+    # Enforce a minimum threshold to avoid log(0) or log(negative).
+    # Use 0.01 mm/hr as the floor (represents ~0.24 mm/day or 87 mm/year).
+    MIN_INTENSITY = 0.01
+    if np.any(i < MIN_INTENSITY):
+        i = np.maximum(i, MIN_INTENSITY)
+    
     if np.any(i <= 0):
         raise PrecipError("non-positive IDF intensity; cannot interpolate in log space")
 
-    lin = interp1d(np.log(d), np.log(i), kind="linear", bounds_error=True)
+    # Allow extrapolation beyond fitted durations using linear extrapolation on the log curve
+    lin = interp1d(np.log(d), np.log(i), kind="linear", bounds_error=False, 
+                   fill_value="extrapolate")
 
     def f(dur: float) -> float:
         return float(np.exp(lin(np.log(dur))))

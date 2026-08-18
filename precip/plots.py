@@ -8,15 +8,15 @@ from pathlib import Path
 
 import matplotlib
 
-matplotlib.use("Agg")          # MUST precede the pyplot import, in every worker
+matplotlib.use("Agg")          
 
-import matplotlib.pyplot as plt  # noqa: E402
-import numpy as np  # noqa: E402
-from scipy.stats import genextreme  # noqa: E402
+import matplotlib.pyplot as plt  
+import numpy as np  
+from scipy.stats import genextreme  
 
-from .config import Config  # noqa: E402
-from .stats.aggregate import SCALES, block_aggregate  # noqa: E402
-from .types import Context  # noqa: E402
+from .config import Config  
+from .stats.aggregate import SCALES, block_aggregate  
+from .types import Context  
 
 
 def sample_station_ids(all_ids, n: int, seed: int) -> list[str]:
@@ -30,7 +30,7 @@ def _save(fig, out: Path, name: str) -> str:
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{name}.png"
     fig.savefig(path, dpi=130, bbox_inches="tight")
-    plt.close(fig)             # always close: a leaked figure per station exhausts memory
+    plt.close(fig)            
     return path.name
 
 
@@ -48,7 +48,8 @@ def save_ams(ctx: Context, cfg: Config, out: Path, duration_hr: int = 1) -> str:
     f = ctx.ams[duration_hr]
     fig, ax = plt.subplots(figsize=(12, 5))
     bars = ax.bar(f.index, f["depth_mm"], color="teal", edgecolor="black")
-    # shade maxima drawn from incomplete windows — the qualifier made visible
+    
+    # shade maxima is drawn from incomplete windows — the qualifier made visible
     for b, c in zip(bars, f["completeness"]):
         if c < 1.0:
             b.set_color("indianred")

@@ -37,6 +37,16 @@ def stage(name: str, requires: tuple[str, ...] = ()):
         return fn
     return deco
 
+ 
+def ancestors(name: str) -> set[str]:
+    out: set[str] = set()
+    stack = list(STAGES[name].requires)
+    while stack:
+        cur = stack.pop()
+        if cur not in out:
+            out.add(cur)
+            stack += list(STAGES[cur].requires)
+    return out
 
 def resolve(selected: Iterable[str]) -> list[Stage]:
     

@@ -18,7 +18,7 @@ from pathlib import Path
 from .config import Config
 from .io.reader import read_station
 from .io.writer import ShardWriter, load_manifest
-from .stages import Stage, resolve
+from .stages import Stage, ancestors, resolve
 from .types import Context, StationResult
 
 
@@ -26,12 +26,20 @@ def _run_stages(ctx: Context, stages: list[Stage], cfg: Config) -> tuple[dict, l
     """Execute stages against a Context. Shared by `run` and `report`."""
     outputs: dict[str, dict] = {}
     errors: list[dict[str, str]] = []
+    failed: set[str] = set()
     for stage in stages:
+        blocked = failed.intersection(ancestors(stage.name))
+        
+        if blocked:
+            failed.add(stage.name)
+            errors.append({"stage": stage.name,
+                           "error": f"SkippedError: depends on failed {sorted(blocked)}"})
+            continue
         try:
             outputs[stage.name] = stage.fn(ctx, cfg)
         except Exception as exc:
+            failed.add(stage.name)
             errors.append({"stage": stage.name, "error": f"{type(exc).__name__}: {exc}"})
-            break          
     return outputs, errors
 
 
